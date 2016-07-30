@@ -50,10 +50,11 @@ DListController.prototype.finalize = function () {
 };
 
 DListController.prototype.contains = function (item) {
+  var tempitem;
   if (!item) {
     return false;
   }
-  var tempitem = this.list.head;
+  tempitem = this.list.head;
   if (!tempitem) {
     return false;
   }
@@ -145,6 +146,7 @@ DListController.prototype.addAsPrevTo = function (item, prevtarget) {
 };
 
 DListController.prototype.remove = function(item){
+  var next;
   if(item === null){
     throw new Error("Cannot remove null item");
     return;
@@ -169,7 +171,7 @@ DListController.prototype.remove = function(item){
     }
   }
   this.list.length--;
-  var next = item.unlinkAndReturnNext();
+  next = item.unlinkAndReturnNext();
   assert (next !== item);
   if (next) {
     assert (next.content !== null);
@@ -261,8 +263,9 @@ DListController.prototype.drainConditionally = function (item) {
 };
 
 DListController.prototype.traverse = function(item){
+  var it;
   this.traversing = true;
-  var it = new Iterator(this, item);
+  it = new Iterator(this, item);
   it.run();
   it.destroy();
   this.traversing = false;

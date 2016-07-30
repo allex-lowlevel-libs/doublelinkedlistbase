@@ -41,13 +41,14 @@ ListMixin.prototype.assureForController = function () {
 };
 
 ListMixin.prototype.remove = function (item) {
+  var ret;
   if (!item) {
     return;
   }
   if (item === null || 'object' !== typeof item || !(item instanceof DListItem)){
     throw new Error('Item is not instance of DListItem');
   }
-  var ret = item.content;
+  ret = item.content;
   this.assureForController();
   this.controller.remove(item);
   item.destroy();

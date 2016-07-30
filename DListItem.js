@@ -21,13 +21,14 @@ DListItem.prototype.destroy = function(){
 };
 
 DListItem.prototype.linkAsPrev = function (item) {
+  var iwd;
   if (!item) {
     return new ItemWithDistance(this, 0);
   }
   if ('object' !== typeof item || !(item instanceof DListItem)){
     throw new Error('Item is not instance of DListItem');
   }
-  var iwd = ItemWithDistance.PrevestItem(item);
+  iwd = ItemWithDistance.PrevestItem(item);
   if (this.prev) {
     assert(this.prev.next === this);
     this.prev.next = iwd.item;
@@ -40,13 +41,14 @@ DListItem.prototype.linkAsPrev = function (item) {
 };
 
 DListItem.prototype.linkAsNext = function (item) {
+  var iwd;
   if (!item) {
     return new ItemWithDistance(this, 0);
   }
   if ('object' !== typeof item || !(item instanceof DListItem)){
     throw new Error('Item is not instance of DListItem');
   }
-  var iwd = ItemWithDistance.NextestItem(item);
+  iwd = ItemWithDistance.NextestItem(item);
   if (this.next) {
     assert(this.next.prev === this);
     this.next.prev = iwd.item;
