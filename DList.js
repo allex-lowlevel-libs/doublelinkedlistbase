@@ -58,7 +58,7 @@ DListController.prototype.contains = function (item) {
     return false;
   }
   do {
-    if (tempitem == item) {
+    if (tempitem == item) { //check if === neccessery?
       return true;
     }
     tempitem = tempitem.next;
@@ -105,12 +105,13 @@ DListController.prototype.addToFront = function(newItem){
   if (newItem.prev) {
     console.trace();
     console.log(newItem);
-    throw Error('Cannot addToFront an item with a prev');
+    throw new Error('Cannot addToFront an item with a prev');
   }
+  //TODO why?
   if (newItem.next) {
     console.trace();
     console.log(newItem);
-    throw Error('Cannot addToFront an item with a next');
+    throw new Error('Cannot addToFront an item with a next');
   }
   if (!this.list.head) {
     this.list.head = this.list.tail = newItem;
@@ -145,7 +146,7 @@ DListController.prototype.addAsPrevTo = function (item, prevtarget) {
 
 DListController.prototype.remove = function(item){
   if(item === null){
-    throw Error("Cannot remove null item");
+    throw new Error("Cannot remove null item");
     return;
   }
   if(!this.contains(item)) {
@@ -154,7 +155,7 @@ DListController.prototype.remove = function(item){
   assert(this.check());
   if (this.list.length>1 && !item.prev && !item.next) {
     console.error('empty', item, 'on length', this.list.length);
-    throw Error('Severe corruption');
+    throw new Error('Severe corruption');
   }
   if (item === this.list.tail) {
     this.list.tail = item.prev;

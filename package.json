@@ -1,14 +1,17 @@
 {
   "name": "allex_doublelinkedlistbaselowlevellib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "JavaScript base for producing double linked lists",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/allex-lowlevel-libs/doublelinkedlistbase.git"
+  },
+  "devDependencies": {
+    "chai": "3.x"
   },
   "keywords": [
     "ecosystem:AllexJS",

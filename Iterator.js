@@ -10,10 +10,12 @@ function Iterator (controller, item) {
   this.iteratorTarget = null;
   if (!(controller && controller.list && controller.list.head && controller.list.head.hasOwnProperty('content'))) {
     this.destroy();
+    return;
   } else {
     this.setTargetItem(controller.list.head);
   }
 }
+
 Iterator.prototype.destroy = function () {
   this.iteratorTarget = null;
   this.iteratorFound = null;
@@ -21,6 +23,7 @@ Iterator.prototype.destroy = function () {
   this.item = null;
   this.controller = null;
 };
+
 Iterator.prototype.setTargetItem = function (item) {
   if (this.iteratorTarget) {
     this.iteratorTarget.setIterator(this.iteratorFound);
@@ -30,6 +33,7 @@ Iterator.prototype.setTargetItem = function (item) {
   this.iteratorFound = item ? item.setIterator(this) : null;
   this.checkTargetItem();
 };
+
 Iterator.prototype.run = function (conditionally) {
   var ret, item, sd;
   if (!this.targetItem) {
@@ -61,6 +65,7 @@ Iterator.prototype.run = function (conditionally) {
   }
   return ret;
 };
+
 Iterator.prototype.checkTargetItem = function () {
   if (this.targetItem) {
     assert(this.targetItem.content !== null);
