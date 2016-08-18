@@ -68,7 +68,6 @@ DListController.prototype.contains = function (item) {
 };
 
 DListController.prototype.addToBack = function(newItem, ignoretraversal){
-  var iwd;
   if (!newItem) {
     return;
   }
@@ -76,28 +75,22 @@ DListController.prototype.addToBack = function(newItem, ignoretraversal){
     if (!this.pushes) {
       this.pushes = newItem;
     } else {
-      iwd = ItemWithDistance.NextestItem(this.pushes);
-      iwd.item.next = newItem;
-      newItem.prev = iwd.item;
-      iwd.destroy();
-      iwd = null;
+      ItemWithDistance.nextestItem(this.pushes);
+      ItemWithDistance.item().next = newItem;
+      newItem.prev = ItemWithDistance.item();
     }
     return;
   };
   assert(!this.contains(newItem));
   if (!this.list.head) {
-    iwd = ItemWithDistance.NextestItem(newItem);
+    ItemWithDistance.nextestItem(newItem);
     this.list.head = newItem;
-    this.list.tail = iwd.item;
-    this.list.length = (iwd.distance+1);
-    iwd.destroy();
-    iwd = null;
+    this.list.tail = ItemWithDistance.item();
+    this.list.length = (ItemWithDistance.distance()+1);
   } else {
-    iwd = this.list.tail.linkAsNext(newItem);
-    this.list.tail = iwd.item;
-    this.list.length += (iwd.distance+1);
-    iwd.destroy();
-    iwd = null;
+    this.list.tail.linkAsNext(newItem);
+    this.list.tail = ItemWithDistance.item();
+    this.list.length += (ItemWithDistance.distance()+1);
   }
   this.finalize();
 };
@@ -127,7 +120,7 @@ DListController.prototype.addToFront = function(newItem){
 };
 
 DListController.prototype.addAsPrevTo = function (item, prevtarget) {
-  var iwd, tt;
+  var tt;
   if (!item) {
     return;
   }
@@ -135,13 +128,11 @@ DListController.prototype.addAsPrevTo = function (item, prevtarget) {
     return this.addToBack(item, true);
   }
   assert(this.contains(prevtarget));
-  iwd = prevtarget.linkAsPrev(item);
+  prevtarget.linkAsPrev(item);
   if (prevtarget === this.list.head) {
-    this.list.head = iwd.item;
+    this.list.head = ItemWithDistance.item();
   }
-  this.list.length += (iwd.distance+1);
-  iwd.destroy();
-  iwd = null;
+  this.list.length += (ItemWithDistance.distance()+1);
   this.finalize();
 };
 
@@ -241,8 +232,9 @@ DListController.prototype.drain = function (item) {
   this.finalize();
 };
 
-DListController.prototype.drainConditionally = function (item) {
+DListController.prototype.drainConditionally = function (item, destroyeditemcb) {
   var tempitem = this.list.head,
+    calldicb = 'function' === typeof destroyeditemcb,
     nextitem,
     crit;
   this.traversing = true;
@@ -252,6 +244,9 @@ DListController.prototype.drainConditionally = function (item) {
     crit = tempitem.apply(item);
     if ('undefined' === typeof crit) {
       tempitem.destroy();
+      if (calldicb) {
+        destroyeditemcb(tempitem);
+      }
     } else {
       this.addAsPrevTo(tempitem, nextitem);
       assert(this.check());

@@ -1,41 +1,57 @@
 'use strict';
-function ItemWithDistance (item, distance) {
-  this.item = item;
-  this.distance = distance;
-}
-ItemWithDistance.prototype.destroy = function () {
-  this.distance = null;
-  this.item = null;
-};
 
-ItemWithDistance.PrevestItem = function (item) {
+var _item;
+var _distance;
+
+function PrevestItem (item) {
   var retitem = item,
     retdistance = 0,
     pitem;
   while(retitem) {
     pitem = retitem.prev;
     if (!pitem) {
-      return new ItemWithDistance(retitem, retdistance);
+      set(retitem, retdistance);
+      return;
     }
     retitem = pitem;
     retdistance++;
   }
-  return new ItemWithDistance(retitem, retdistance);
+  set(retitem, retdistance);
 };
 
-ItemWithDistance.NextestItem = function (item) {
+function NextestItem (item) {
   var retitem = item,
     retdistance = 0,
     nitem;
   while(retitem) {
     nitem = retitem.next;
     if (!nitem) {
-      return new ItemWithDistance(retitem, retdistance);
+      set(retitem, retdistance);
+      return;
     }
     retitem = nitem;
     retdistance++;
   }
-  return new ItemWithDistance(retitem, retdistance);
+  set(retitem, retdistance);
 };
 
-module.exports = ItemWithDistance;
+function set (item, distance) {
+  _item = item;
+  _distance = distance;
+}
+
+function getItem () {
+  return _item;
+}
+
+function getDistance () {
+  return _distance;
+}
+
+module.exports = {
+  nextestItem: NextestItem,
+  prevestItem: PrevestItem,
+  set: set,
+  item: getItem,
+  distance: getDistance
+};

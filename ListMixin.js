@@ -45,9 +45,11 @@ ListMixin.prototype.remove = function (item) {
   if (!item) {
     return;
   }
+  /*
   if (item === null || 'object' !== typeof item || !(item instanceof DListItem)){
     throw new Error('Item is not instance of DListItem');
   }
+  */
   ret = item.content;
   this.assureForController();
   this.controller.remove(item);

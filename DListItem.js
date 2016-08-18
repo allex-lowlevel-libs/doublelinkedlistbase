@@ -21,43 +21,39 @@ DListItem.prototype.destroy = function(){
 };
 
 DListItem.prototype.linkAsPrev = function (item) {
-  var iwd;
   if (!item) {
-    return new ItemWithDistance(this, 0);
+    ItemWithDistance.set(this, 0);
+    return;
   }
   if ('object' !== typeof item || !(item instanceof DListItem)){
     throw new Error('Item is not instance of DListItem');
   }
-  iwd = ItemWithDistance.PrevestItem(item);
+  ItemWithDistance.prevestItem(item);
   if (this.prev) {
     assert(this.prev.next === this);
-    this.prev.next = iwd.item;
+    this.prev.next = ItemWithDistance.item();
   }
-  iwd.item.prev = this.prev;
+  ItemWithDistance.item().prev = this.prev;
   assert(item.next===null);
   item.next = this;
   this.prev = item;
-  return iwd;
 };
 
 DListItem.prototype.linkAsNext = function (item) {
   var iwd;
   if (!item) {
-    return new ItemWithDistance(this, 0);
+    ItemWithDistance.set(this, 0);
+    return;
   }
-  if ('object' !== typeof item || !(item instanceof DListItem)){
-    throw new Error('Item is not instance of DListItem');
-  }
-  iwd = ItemWithDistance.NextestItem(item);
+  ItemWithDistance.nextestItem(item);
   if (this.next) {
     assert(this.next.prev === this);
-    this.next.prev = iwd.item;
+    this.next.prev = ItemWithDistance.item();
   }
-  iwd.item.next = this.next;
+  ItemWithDistance.item().next = this.next;
   assert(item.prev===null);
   item.prev = this;
   this.next = item;
-  return iwd;
 };
 
 DListItem.prototype.unlinkAndReturnNext = function () {
@@ -86,24 +82,6 @@ DListItem.prototype.setIterator = function (iterator) {
   var ret = this.iterator;
   this.iterator = iterator;
   return ret;
-};
-
-DListItem.prototype.linkAsNext = function (item) {
-  var iwd;
-  if (!item) {
-    return new ItemWithDistance(this, 0);
-  }
-  if ('object' !== typeof item || !(item instanceof DListItem)){
-    throw new Error('Item is not instance of DListItem');
-  }
-  iwd = ItemWithDistance.NextestItem(item);
-  if (this.next) {
-    this.next.prev = iwd.item;
-  }
-  iwd.item.next = this.next;
-  item.prev = this;
-  this.next = item;
-  return iwd;
 };
 
 module.exports = DListItem;
