@@ -10,15 +10,15 @@ function DListController(myList){
 }
 
 DListController.prototype.destroy = function(){
-  var l = this.list, sd = this.shouldDestroy;
+  var sd = this.shouldDestroy;
   this.shouldDestroy = null;
   this.pushes = null;
   this.traversing = null;
-  this.list = null;
-  if (l) {
-    l.controller = null;
+  if (this.list) {
     if (sd) {
-      l.destroy();
+      this.list.controller = null;
+      this.list.destroy();
+      this.list = null;
     }
   }
 };
