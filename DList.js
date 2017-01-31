@@ -81,7 +81,7 @@ DListController.prototype.addToBack = function(newItem, ignoretraversal){
     }
     return;
   };
-  assert(!this.contains(newItem));
+  //assert(!this.contains(newItem));
   if (!this.list.head) {
     ItemWithDistance.nextestItem(newItem);
     this.list.head = newItem;
@@ -127,7 +127,7 @@ DListController.prototype.addAsPrevTo = function (item, prevtarget) {
   if (!prevtarget) {
     return this.addToBack(item, true);
   }
-  assert(this.contains(prevtarget));
+  //assert(this.contains(prevtarget));
   prevtarget.linkAsPrev(item);
   if (prevtarget === this.list.head) {
     this.list.head = ItemWithDistance.item();
@@ -145,7 +145,7 @@ DListController.prototype.remove = function(item){
   if(!this.contains(item)) {
     return;
   }
-  assert(this.check());
+  //assert(this.check());
   if (this.list.length>1 && !item.prev && !item.next) {
     console.error('empty', item, 'on length', this.list.length);
     throw new Error('Severe corruption');
@@ -174,7 +174,7 @@ DListController.prototype.remove = function(item){
       this.list.length = 0;
     }
   }
-  assert(this.check());
+  //assert(this.check());
   this.finalize();
   return next;
 };
@@ -240,7 +240,7 @@ DListController.prototype.drainConditionally = function (item, destroyeditemcb) 
   this.traversing = true;
   while (tempitem) {
     nextitem = this.remove(tempitem);
-    assert(this.check());
+    //assert(this.check());
     crit = tempitem.apply(item);
     if ('undefined' === typeof crit) {
       tempitem.destroy();
@@ -249,7 +249,7 @@ DListController.prototype.drainConditionally = function (item, destroyeditemcb) 
       }
     } else {
       this.addAsPrevTo(tempitem, nextitem);
-      assert(this.check());
+      //assert(this.check());
     }
     tempitem = nextitem;
   }
@@ -316,6 +316,8 @@ DListController.prototype.traverseConditionallyReverse = function(func){
 */
 
 DListController.prototype.check = function () {
+  return true;
+  /*
   var cnt = 0, i;
   if (!this.list) {
     return true;
@@ -348,6 +350,7 @@ DListController.prototype.check = function () {
     }
   }
   return cnt === this.list.length;
+  */
 };
 
 module.exports = DListController;

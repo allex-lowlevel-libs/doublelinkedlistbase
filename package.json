@@ -1,6 +1,6 @@
 {
   "name": "allex_doublelinkedlistbaselowlevellib",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "JavaScript base for producing double linked lists",
   "main": "index.js",
   "scripts": {
