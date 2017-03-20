@@ -1,7 +1,7 @@
 'use strict';
 
-var ControllerCtor = require('./DList'),
-  assert = require('./assert');
+var ControllerCtor = require('./DList');/*,
+  assert = require('./assert');*/
 
 function ListMixin () {
   this.head = null;
@@ -34,10 +34,14 @@ ListMixin.prototype.destroy = function(){
 };
 
 ListMixin.prototype.assureForController = function () {
-  assert('number' === typeof this.length);
+  if ('number' !== typeof this.length) {
+    return false;
+  }
+  //assert('number' === typeof this.length);
   if (!this.controller) {
     this.controller = new ControllerCtor(this);
   }
+  return true;
 };
 
 ListMixin.prototype.remove = function (item) {
@@ -51,7 +55,9 @@ ListMixin.prototype.remove = function (item) {
   }
   */
   ret = item.content;
-  this.assureForController();
+  if (!this.assureForController()) {
+    return;
+  }
   this.controller.remove(item);
   item.destroy();
   return ret;
@@ -61,12 +67,16 @@ ListMixin.prototype.traverse = function (func) {
   if ('function' !== typeof func){
     throw new Error('First parameter is not a function.');
   }
-  this.assureForController();
+  if (!this.assureForController()) {
+    return;
+  }
   this.controller.traverse(func);
 };
 
 ListMixin.prototype.purge = function () {
-  this.assureForController();
+  if (!this.assureForController()) {
+    return;
+  }
   this.controller.shouldDestroy = true;
   this.controller.purge();
 };
