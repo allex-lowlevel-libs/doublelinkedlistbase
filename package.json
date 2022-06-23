@@ -1,6 +1,6 @@
 {
   "name": "allex_doublelinkedlistbaselowlevellib",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "JavaScript base for producing double linked lists",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,8 @@
     "url": "git+https://github.com/allex-lowlevel-libs/doublelinkedlistbase.git"
   },
   "devDependencies": {
+    "allex_checkslowlevellib": "1.x",
+    "allex_inheritlowlevellib": "3.x",
     "chai": "3.x"
   },
   "keywords": [

@@ -1,6 +1,6 @@
 'use strict';
 
-var assert = require('./assert');
+var assert = require('../assert');
 
 function Iterator (controller, item) {
   this.controller = controller;
@@ -36,6 +36,10 @@ Iterator.prototype.setTargetItem = function (item) {
 
 Iterator.prototype.run = function (conditionally) {
   var ret, item, sd;
+  if (arguments.length > 0) {
+    console.error('DList iterator does not accept any parameters in the run method');
+    return;
+  }
   if (!this.targetItem) {
     return;
   }
@@ -47,7 +51,7 @@ Iterator.prototype.run = function (conditionally) {
     } else {
       this.targetItem = null;
     }
-    ret = item.apply(this.item);
+    ret = this.obtainStepResult(item);
     if (item === this.iteratorTarget) {
       this.iteratorTarget.setIterator(this.iteratorFound);
       this.iteratorTarget = null;
@@ -58,7 +62,7 @@ Iterator.prototype.run = function (conditionally) {
     if (sd) {
       item.destroy();
     }
-    if (conditionally && 'undefined' !== typeof ret) {
+    if (this.shouldFinishRun(ret)) {
       return ret;
     }
     this.checkTargetItem();
@@ -70,6 +74,13 @@ Iterator.prototype.checkTargetItem = function () {
   if (this.targetItem) {
     assert(this.targetItem.content !== null);
   }
+};
+
+Iterator.prototype.obtainStepResult = function (item) {
+  return item.apply(this.item);
+};
+Iterator.prototype.shouldFinishRun = function (runstepresult) {
+  return false;
 };
 
 
