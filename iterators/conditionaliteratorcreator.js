@@ -8,7 +8,6 @@ function createConditionalIterator (inherit, mylib) {
   }
   inherit(ConditionalIterator, Iterator);
   ConditionalIterator.prototype.shouldFinishRun = function (runstepresult) {
-    console.log(this.constructor.name, 'shouldFinishRun');
     return 'undefined' !== typeof runstepresult;
   };
 
