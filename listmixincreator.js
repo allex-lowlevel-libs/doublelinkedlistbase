@@ -16,6 +16,7 @@ function createListMixin (inherit) {
     ctor.prototype.assureForController = ListMixin.prototype.assureForController;
     ctor.prototype.remove = ListMixin.prototype.remove;
     ctor.prototype.traverse = ListMixin.prototype.traverse;
+    ctor.prototype.reduce = ListMixin.prototype.reduce;
     ctor.prototype.purge = ListMixin.prototype.purge;
   };
 
@@ -72,6 +73,26 @@ function createListMixin (inherit) {
       return;
     }
     this.controller.traverse(func);
+  };
+
+  function reducer (reduceobj, item) {
+    try {
+      reduceobj.seed = reduceobj.func(reduceobj.seed, item);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+  ListMixin.prototype.reduce = function (func, seed) {
+    var reduceobj, ret;
+    if ('function' !== typeof func){
+      throw new Error('First parameter is not a function.');
+    }
+    reduceobj = {func: func, seed: seed};
+    this.traverse(reducer.bind(null, reduceobj));
+    ret = reduceobj.seed;
+    reduceobj = null;
+    return ret;
   };
 
   ListMixin.prototype.purge = function () {
