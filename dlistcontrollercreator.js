@@ -9,12 +9,14 @@ function createDListController (inherit) {
     this.list = myList;
     this.traversing = null;
     this.pushes = null;
+    this.pushesNextest = null;
     this.shouldDestroy = null;
   }
 
   DListController.prototype.destroy = function(){
     var sd = this.shouldDestroy;
     this.shouldDestroy = null;
+    this.pushesNextest = null;
     this.pushes = null;
     this.traversing = null;
     if (this.list) {
@@ -47,6 +49,7 @@ function createDListController (inherit) {
     if (this.pushes) {
       p = this.pushes;
       this.pushes = null;
+      this.pushesNextest = null;
       this.addToBack(p);
     }
     this.destroy();
@@ -78,9 +81,10 @@ function createDListController (inherit) {
       if (!this.pushes) {
         this.pushes = newItem;
       } else {
-        ItemWithDistance.nextestItem(this.pushes);
-        ItemWithDistance.item().next = newItem;
-        newItem.prev = ItemWithDistance.item();
+        ItemWithDistance.nextestItem(this.pushesNextest || this.pushes);
+        this.pushesNextest = ItemWithDistance.item();
+        this.pushesNextest.next = newItem;
+        newItem.prev = this.pushesNextest;
       }
       return;
     };
