@@ -141,13 +141,8 @@ function createDListController (inherit) {
     var next;
     if(item === null){
       throw new Error("Cannot remove null item");
-      return;
     }
     //assert(this.check());
-    if (this.list.length>1 && !item.prev && !item.next) {
-      console.error('empty', item, 'on length', this.list.length);
-      throw new Error('Severe corruption');
-    }
     if (item === this.list.tail) {
       assert(item.next==null);
       this.list.tail = item.prev;
@@ -162,6 +157,12 @@ function createDListController (inherit) {
       }
     } else {
       if (!(item.prev && item.next)) {
+        if (this.list.length==0) {
+          return null;
+        }
+        if (!this.contains(item)) {
+          return null;
+        }
         console.error('?!', item);
         assert(false);
       }
