@@ -78,7 +78,8 @@ DListItem.prototype.unlinkAndReturnNext = function () {
 };
 
 DListItem.prototype.setIterator = function (iterator) {
-  //TODO check instanceof Iterator, dont know about undefined/null?
+  //assert(iterator != null);
+  assert('undefined' != typeof iterator);
   var ret = this.iterator;
   this.iterator = iterator;
   return ret;

@@ -3,20 +3,19 @@ function createDListController (inherit) {
 
   var iterators = require('./iterators')(inherit),
     ItemWithDistance = require('./ItemWithDistance'),
+    ForwardItemSequence = require('./ForwardItemSequence'),
     assert = require('./assert');
 
   function DListController(myList){
     this.list = myList;
     this.traversing = null;
     this.pushes = null;
-    this.pushesNextest = null;
     this.shouldDestroy = null;
   }
 
   DListController.prototype.destroy = function(){
     var sd = this.shouldDestroy;
     this.shouldDestroy = null;
-    this.pushesNextest = null;
     this.pushes = null;
     this.traversing = null;
     if (this.list) {
@@ -37,20 +36,19 @@ function createDListController (inherit) {
       t.destroy();
     }
     this.list.head = this.list.tail = null;
+    this.list.length = 0;
     this.traversing = false;
     this.finalize();
   };
 
   DListController.prototype.finalize = function () {
-    var p;
     if (this.traversing) {
       return;
     }
     if (this.pushes) {
-      p = this.pushes;
+      this.pushes.addToBackOf(this.list);
+      this.pushes.destroy();
       this.pushes = null;
-      this.pushesNextest = null;
-      this.addToBack(p);
     }
     this.destroy();
   };
@@ -79,13 +77,9 @@ function createDListController (inherit) {
     }
     if (this.traversing && !ignoretraversal) {
       if (!this.pushes) {
-        this.pushes = newItem;
-      } else {
-        ItemWithDistance.nextestItem(this.pushesNextest || this.pushes);
-        this.pushesNextest = ItemWithDistance.item();
-        this.pushesNextest.next = newItem;
-        newItem.prev = this.pushesNextest;
+        this.pushes = new ForwardItemSequence();
       }
+      this.pushes.add(newItem);
       return;
     };
     //assert(!this.contains(newItem));
@@ -149,24 +143,30 @@ function createDListController (inherit) {
       throw new Error("Cannot remove null item");
       return;
     }
-    if(!this.contains(item)) {
-      return;
-    }
     //assert(this.check());
     if (this.list.length>1 && !item.prev && !item.next) {
       console.error('empty', item, 'on length', this.list.length);
       throw new Error('Severe corruption');
     }
     if (item === this.list.tail) {
+      assert(item.next==null);
       this.list.tail = item.prev;
       if (!this.list.tail) {
-        this.list.tail = this.list.head;
+        this.list.head = null;
       }
-    } else if (item !== this.list.head) {
+    } else if (item === this.list.head) {
+      assert(item.prev==null);
+      this.list.head = item.next;
+      if (!this.list.head) {
+        this.list.tail = null;
+      }
+    } else {
       if (!(item.prev && item.next)) {
         console.error('?!', item);
         assert(false);
       }
+      ItemWithDistance.nextestItem(item);
+      assert (ItemWithDistance.item() === this.list.tail); //list contains item
     }
     this.list.length--;
     next = item.unlinkAndReturnNext();
@@ -174,15 +174,8 @@ function createDListController (inherit) {
     if (next) {
       assert (next.content !== null);
     }
-    if (item === this.list.head) {
-      this.list.head = next;
-      if (!this.list.head) {
-        this.list.tail = null;
-        this.list.length = 0;
-      }
-    }
     //assert(this.check());
-    this.finalize();
+    //this.finalize();
     return next;
   };
 

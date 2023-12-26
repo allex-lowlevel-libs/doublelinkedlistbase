@@ -5,10 +5,10 @@ function createListMixin (inherit) {
     assert = require('./assert');*/
 
   function ListMixin () {
+    this.controller = null;
     this.head = null;
     this.tail = null;
     this.length = 0;
-    this.controller = null;
   }
 
   ListMixin.addMethods = function (ctor) {
@@ -23,7 +23,6 @@ function createListMixin (inherit) {
   ListMixin.prototype.destroy = function(){
     if (this.controller) {
       this.controller.shouldDestroy = true;
-      return;
     }
     if (this.length) {
       this.purge();
@@ -33,6 +32,9 @@ function createListMixin (inherit) {
     this.length = null;
     this.tail = null;
     this.head = null;
+    if (this.controller) {
+      this.controller.destroy();
+    }
   };
 
   ListMixin.prototype.assureForController = function () {
@@ -99,8 +101,13 @@ function createListMixin (inherit) {
     if (!this.assureForController()) {
       return;
     }
-    this.controller.shouldDestroy = true;
     this.controller.purge();
+    if (!this.controller && this.length!=null) {
+      throw new Error('Should have been destroyed here');
+    }
+    if (this.controller && this.length!=0) {
+      throw new Error('After purge, list length!=0, but '+this.length);
+    }
   };
 
   return ListMixin;
